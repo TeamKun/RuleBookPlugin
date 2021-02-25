@@ -1,9 +1,0 @@
-name: RuleBookPlugin
-version: 1.0
-main: com.github.yanayana8721.rulebookplugin.RuleBookPlugin
-api-version: 1.15
-commands:
-  rulebook:
-    description: You can set RuleBook
-    usage: 'GitHubを見てね!'
-    default: true
