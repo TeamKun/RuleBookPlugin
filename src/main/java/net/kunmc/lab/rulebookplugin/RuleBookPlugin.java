@@ -38,31 +38,30 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         getServer().getLogger().info(ChatColor.AQUA+"RuleBookPlugin by yanaaaaa");
     }
 
-
     public void setBooks(List<ItemStack> s){
-        if(getConfig().getItemStack("Book1").getType() != Material.STICK ) {
+        if(getConfig().getItemStack("Book1").getType() == Material.WRITTEN_BOOK ) {
             s.add(getConfig().getItemStack("Book1"));
-        }if(getConfig().getItemStack("Book2").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book2").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book2"));
-        }if(getConfig().getItemStack("Book3").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book3").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book3"));
-        }if(getConfig().getItemStack("Book4").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book4").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book4"));
-        }if(getConfig().getItemStack("Book5").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book5").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book5"));
-        }if(getConfig().getItemStack("Book6").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book6").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book6"));
-        }if(getConfig().getItemStack("Book7").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book7").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book7"));
-        }if(getConfig().getItemStack("Book8").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book8").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book8"));
-        }if(getConfig().getItemStack("Book9").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book9").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book9"));
-        }if(getConfig().getItemStack("Book10").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book10").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book10"));
-        } if(getConfig().getItemStack("Book11").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book11").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book11"));
-        }if(getConfig().getItemStack("Book12").getType() != Material.STICK) {
+        }if(getConfig().getItemStack("Book12").getType() == Material.WRITTEN_BOOK) {
             s.add(getConfig().getItemStack("Book12"));
         }
         s.stream().distinct();
