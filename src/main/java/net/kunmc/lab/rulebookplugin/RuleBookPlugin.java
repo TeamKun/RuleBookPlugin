@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCompleter {
 
-    public boolean setting = false;
+    public boolean setting ;
     public List<ItemStack> Books = new ArrayList<>();
     public ItemStack RuleBook ;
 
@@ -32,6 +32,10 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     public void onEnable() {
         saveDefaultConfig();
         setBooks(Books);
+        if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
+            RuleBook = getConfig().getItemStack("JoinBook");
+        }
+        setting = getConfig().getBoolean("JoinRead");
         this.getCommand("rulebook").setExecutor(this);
         this.getCommand("rulebook").setTabCompleter(this);
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -145,7 +149,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                                 }
                             }
                         }
-                    }else if(args[0].equals("joinset")){
+                    }else if(args[0].equals("joinbook")){
                         List<String> BookName = new ArrayList<>();
                         for (int i = 0; i < Books.size(); i++) {
                             BookMeta book = (BookMeta)Books.get(i).getItemMeta();
@@ -299,6 +303,12 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         ItemStack M = new ItemStack(Material.STICK);
         reloadConfig();
         FileConfiguration config = getConfig();
+        if(RuleBook != null &&RuleBook.getType() == Material.WRITTEN_BOOK){
+            config.set("JoinBook",RuleBook);
+        }else{
+            config.set("JoinBook",M);
+        }
+        config.set("JoinRead",setting);
         if(n==0){
             config.set("Book1",M);
             config.set("Book2",M);

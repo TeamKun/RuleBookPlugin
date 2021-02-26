@@ -1,3 +1,9 @@
+JoinBook:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+JoinRead: false
+
 Book1:
   ==: org.bukkit.inventory.ItemStack
   type: STICK
