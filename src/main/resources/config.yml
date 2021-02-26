@@ -1,0 +1,47 @@
+Book1:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book2:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book3:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book4:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book5:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book6:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book7:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book8:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book9:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book10:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book11:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
+
+Book12:
+  ==: org.bukkit.inventory.ItemStack
+  type: STICK
