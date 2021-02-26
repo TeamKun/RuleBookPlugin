@@ -1,16 +1,33 @@
 # RuleBookPlugin  
 **〇概要**  
 ・設定した記述済みの本をログインしたプレイヤーに表示することができる。   
+・設定はconfig.ymlからも設定可能  
 ・動作確認済み:Minecraft1.15.2 ,Paper1.15.2  
   
   
   
 **〇コマンド一覧**  
-*・/rulebook on , /rulebook off*  
-ログイン時の本の表示のオン/オフ。  
+*・/rulebook sddlist*    
+リストに本を追加する。右手に記述済みの本を持ちながら実行する。
   
-*・/rulebook set*  
-表示する本の設定。右手に記述済みの本を持ちながら実行する。  
+*・/rulebook listinfo*  
+リストに登録された本のタイトルの一覧を表示する。  
   
-*・/rulebook show*  
-コマンド実行者に設定した本の表示を行う。
+*・/rulebook newbook*  
+未記入の本をコマンド実行者に与える。
+  
+*・/rulebook deleatlist <all,リスト内の本のタイトル>*  
+リストからすべて、もしくは対象の本を削除する。  
+  
+*・/rulebook joinbook <リスト内の本のタイトル>*   
+ログイン時に表示する本の設定。  
+  
+*・/rulebook joinread on , /rulebook joinread off*  
+joinbookコマンドで設定した本をログイン時に表示するかどうかの設定。  
+  
+*・/rulebook read <リスト内の本のタイトル> <対象のプレイヤー>*  
+指定した本を対象のプレイヤーに読ませる。  
+  
+*・/rulebook givebook <リスト内の本のタイトル> <対象のプレイヤー>*  
+指定した本を対象のプレイヤーに与える。  
+  
