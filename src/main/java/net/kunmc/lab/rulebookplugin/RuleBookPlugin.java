@@ -128,6 +128,8 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         ItemStack item = new ItemStack(Material.STICK);
                         RuleBook = item;
                         sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
+                    }else if(args[0].equals("joinbookshow")){
+                        p.openBook(RuleBook);
                     }
                     else{
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
@@ -261,7 +263,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
-                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook")
+                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow")
                         : Stream.of("joinread","deletejoinbook"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
