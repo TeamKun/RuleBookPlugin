@@ -239,7 +239,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         Player p = event.getPlayer();
         if(RuleBook == null){
         }else {
-            if (setting == true) {
+            if (setting == true && RuleBook.getType() == Material.WRITTEN_BOOK) {
                 p.openBook(RuleBook);
             }
         }
