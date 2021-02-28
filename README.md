@@ -17,7 +17,7 @@
 *・/rulebook newbook*  
 未記入の本をコマンド実行者に与える。
   
-*・/rulebook deleatlist <all,リスト内の本のタイトル>*  
+*・/rulebook deletelist <all,リスト内の本のタイトル>*  
 リストからすべて、もしくは対象の本を削除する。  
   
 *・/rulebook joinbook <リスト内の本のタイトル>*   
@@ -26,7 +26,7 @@
 *・/rulebook joinread on , /rulebook joinread off*  
 joinbookコマンドで設定した本をログイン時に表示するかどうかの設定。  
   
-*・/rulebook deleatjoinbook*  
+*・/rulebook deletejoinbook*  
 joinbookコマンドで登録された本を削除します。  
   
 *・/rulebook read <リスト内の本のタイトル> <対象のプレイヤー>*  
