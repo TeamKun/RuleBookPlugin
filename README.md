@@ -29,6 +29,9 @@ joinbookコマンドで設定した本をログイン時に表示するかどう
 *・/rulebook deletejoinbook*  
 joinbookコマンドで登録された本を削除します。  
   
+*・/rulebook joinbookshow*  
+joinbookコマンドで登録された本を見ることができます。  
+  
 *・/rulebook read <リスト内の本のタイトル> <対象のプレイヤー>*  
 指定した本を対象のプレイヤーに読ませる。  
   
