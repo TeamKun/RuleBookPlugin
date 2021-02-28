@@ -123,7 +123,13 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                     }else if(args[0].equals("newbook")){
                         ItemStack item = new ItemStack(Material.WRITABLE_BOOK);
                         p.getLocation().getWorld().dropItem(p.getLocation(), item);
-                    } else{
+                        sender.sendMessage(ChatColor.GREEN +"[RuleBookPlugin]"+ p.getName()+"に未記入の本を与えました！");
+                    }else if(args[0].equals(("deleatjoinbook"))){
+                        ItemStack item = new ItemStack(Material.STICK);
+                        RuleBook = item;
+                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
+                    }
+                    else{
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
                     }
                 }else if(args.length==2){
@@ -255,8 +261,8 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
-                        ? Stream.of("addlist", "listinfo", "deleatlist", "joinbook", "joinread", "read", "givebook", "newbook")
-                        : Stream.of("joinread"))
+                        ? Stream.of("addlist", "listinfo", "deleatlist","deleatjoinbook", "joinbook", "joinread", "read", "givebook", "newbook")
+                        : Stream.of("joinread","deleatjoinbook"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
                 switch (args[0]) {
