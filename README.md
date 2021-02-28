@@ -26,6 +26,9 @@
 *・/rulebook joinread on , /rulebook joinread off*  
 joinbookコマンドで設定した本をログイン時に表示するかどうかの設定。  
   
+*・/rulebook deleatjoinbook*  
+joinbookコマンドで登録された本を削除します。  
+  
 *・/rulebook read <リスト内の本のタイトル> <対象のプレイヤー>*  
 指定した本を対象のプレイヤーに読ませる。  
   
