@@ -124,7 +124,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         ItemStack item = new ItemStack(Material.WRITABLE_BOOK);
                         p.getLocation().getWorld().dropItem(p.getLocation(), item);
                         sender.sendMessage(ChatColor.GREEN +"[RuleBookPlugin]"+ p.getName()+"に未記入の本を与えました！");
-                    }else if(args[0].equals(("deleatjoinbook"))){
+                    }else if(args[0].equals(("deletejoinbook"))){
                         ItemStack item = new ItemStack(Material.STICK);
                         RuleBook = item;
                         sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
@@ -133,7 +133,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
                     }
                 }else if(args.length==2){
-                    if(args[0].equals("deleatlist")){
+                    if(args[0].equals("deletelist")){
                         if(args[1].equals("all")){
                             Books=new ArrayList<>();
                             sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストをすべて削除しました！");
@@ -261,12 +261,12 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
-                        ? Stream.of("addlist", "listinfo", "deleatlist","deleatjoinbook", "joinbook", "joinread", "read", "givebook", "newbook")
-                        : Stream.of("joinread","deleatjoinbook"))
+                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook")
+                        : Stream.of("joinread","deletejoinbook"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
                 switch (args[0]) {
-                    case "deleatlist": {
+                    case "deletelist": {
                         BookName.add("all");
                         return BookName;
                     }
