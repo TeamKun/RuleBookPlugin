@@ -266,8 +266,8 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String Label, String[] args){
         List<String> BookName = new ArrayList<>();
-        for (int i = 0; i < Books.size(); i++) {
-            BookMeta book = (BookMeta)Books.get(i).getItemMeta();
+        for (ItemStack itemStack : Books) {
+            BookMeta book = (BookMeta) itemStack.getItemMeta();
             BookName.add(book.getTitle());
         }
         ArrayList<String> PlayerName = new ArrayList<String>();
@@ -287,16 +287,19 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         : Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
-                if(args[0].equals("deletelist")){
-                    BookName.add("all");
-                    return BookName;
-                }else if(args[0].equals("givebook")||args[0].equals("read")||args[0].equals("joinbook")){
-                    return BookName;
-                }else if(args[0].equals("joinread")){
-                    return (sender.hasPermission("rulebook")
-                            ? Stream.of("on", "off")
-                            : Stream.of("on", "off"))
-                            .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
+                switch (args[0]) {
+                    case "deletelist":
+                        BookName.add("all");
+                        return BookName;
+                    case "givebook":
+                    case "read":
+                    case "joinbook":
+                        return BookName;
+                    case "joinread":
+                        return (sender.hasPermission("rulebook")
+                                ? Stream.of("on", "off")
+                                : Stream.of("on", "off"))
+                                .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
                 }
             } else if (args.length == 3) {
                 if(args[0].equals("givebook")||args[0].equals("read")){
@@ -304,7 +307,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                     }
                 }
             }
-        return Collections.emptyList();
+        return onTabComplete(sender, cmd, Label, args);
     }
 
     @Override
