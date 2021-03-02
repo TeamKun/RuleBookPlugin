@@ -130,6 +130,17 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
                     }else if(args[0].equals("joinbookshow")){
                         p.openBook(RuleBook);
+                    }else if(args[0].equals("reloadconfig")){
+                        reloadConfig();
+                        setBooks(Books);
+                        if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
+                            RuleBook = getConfig().getItemStack("JoinBook");
+                        }
+                        setting = getConfig().getBoolean("JoinRead");
+                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configをリロードしました！");
+                    }else if(args[0].equals("saveconfig")){
+                        ConfigSetting();
+                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configに現在の設定を保存しました！");
                     }
                     else{
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
@@ -263,8 +274,8 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
-                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow")
-                        : Stream.of("joinread","deletejoinbook"))
+                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig")
+                        : Stream.of("joinread","deletejoinbook","reloadconfig"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
                 switch (args[0]) {
@@ -307,10 +318,14 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
 
     @Override
     public void onDisable() {
-        int n = Books.size();
-        ItemStack M = new ItemStack(Material.STICK);
+       ConfigSetting();
+    }
+
+    public  void  ConfigSetting(){
         reloadConfig();
         FileConfiguration config = getConfig();
+        int n = Books.size();
+        ItemStack M = new ItemStack(Material.STICK);
         if(RuleBook != null &&RuleBook.getType() == Material.WRITTEN_BOOK){
             config.set("JoinBook",RuleBook);
         }else{
@@ -500,5 +515,4 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         }
         saveConfig();
     }
-
 }
