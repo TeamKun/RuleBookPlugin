@@ -270,48 +270,40 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
             BookMeta book = (BookMeta)Books.get(i).getItemMeta();
             BookName.add(book.getTitle());
         }
+        ArrayList<String> PlayerName = new ArrayList<String>();
+        getServer().getOnlinePlayers().forEach(player ->{
+            PlayerName.add(player.getName());
+        });
+        PlayerName.add("@a");
+        PlayerName.add("@p");
+        PlayerName.add("@r");
+        PlayerName.add("@s");
+        PlayerName.add("@e");
+
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
                         ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig")
-                        : Stream.of("joinread","deletejoinbook","reloadconfig"))
+                        : Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
-                switch (args[0]) {
-                    case "deletelist": {
-                        BookName.add("all");
-                        return BookName;
-                    }
-                    case "givebook":
-                    case "read":
-                    case "joinbook": {
-                        return BookName;
-                    }
-                    case "joinread": {
-                        return (sender.hasPermission("rulebook")
-                                ? Stream.of("on", "off")
-                                : Stream.of("on"))
-                                .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
-                    }
+                if(args[0].equals("deletelist")){
+                    BookName.add("all");
+                    return BookName;
+                }else if(args[0].equals("givebook")||args[0].equals("read")||args[0].equals("joinbook")){
+                    return BookName;
+                }else if(args[0].equals("joinread")){
+                    return (sender.hasPermission("rulebook")
+                            ? Stream.of("on", "off")
+                            : Stream.of("on", "off"))
+                            .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
                 }
             } else if (args.length == 3) {
-                ArrayList<String> PlayerName = new ArrayList<String>();
-                getServer().getOnlinePlayers().forEach(player ->{
-                   PlayerName.add(player.getName());
-                });
-                PlayerName.add("@a");
-                PlayerName.add("@p");
-                PlayerName.add("@r");
-                PlayerName.add("@s");
-                PlayerName.add("@e");
-                switch (args[0]) {
-                    case "givebook":
-                    case "read": {
+                if(args[0].equals("givebook")||args[0].equals("read")){
                         return PlayerName;
                     }
                 }
             }
-        }
         return Collections.emptyList();
     }
 
