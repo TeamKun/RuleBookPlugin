@@ -101,6 +101,8 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         } else if (p.getItemInHand().getType() == Material.WRITTEN_BOOK) {
                             if (checkList(Books, p.getItemInHand()) == false) {
                                 sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに同じ名前の本が存在します。本の名前を変更してください！");
+                            } else if (Books.size() >= 12) {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストの上限数は12冊です。12冊未満になるように登録された本を削除してください！");
                             } else {
                                     Books.add(p.getItemInHand());
                                     sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
@@ -131,7 +133,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                     }else if(args[0].equals("joinbookshow")){
                         p.openBook(RuleBook);
                     }else if(args[0].equals("reloadconfig")){
-                        reloadConfig();
+                        Books = new ArrayList<>();
                         setBooks(Books);
                         if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
                             RuleBook = getConfig().getItemStack("JoinBook");
@@ -156,9 +158,6 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                                 BookMeta book = (BookMeta)Books.get(i).getItemMeta();
                                 BookName.add(book.getTitle());
                             }
-                            if (Books.size() >= 12) {
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストの上限数は12冊です。12冊未満になるように登録された本を削除してください！");
-                            } else {
                                 if (BookName.contains(args[1])) {
                                     int n = BookName.indexOf(args[1]);
                                     Books.remove(n);
@@ -166,7 +165,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                                 } else {
                                     sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
                                 }
-                            }
+
                         }
                     }else if(args[0].equals("joinbook")){
                         List<String> BookName = new ArrayList<>();
