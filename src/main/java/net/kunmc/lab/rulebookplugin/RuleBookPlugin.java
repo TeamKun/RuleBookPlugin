@@ -307,7 +307,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                     }
                 }
             }
-        return onTabComplete(sender, cmd, Label, args);
+        return null;
     }
 
     @Override
