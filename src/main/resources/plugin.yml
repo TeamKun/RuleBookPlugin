@@ -1,9 +1,9 @@
 name: RuleBookPlugin
 main: net.kunmc.lab.rulebookplugin.RuleBookPlugin
 api-version: 1.15
-version: 2.8.1
+version: 2.9
 commands:
   rulebook:
-    description: 'GitHubを見てね!'
-    usage: 'GitHubを見てね!'
+    description: '/rulebook helpから見てね'
+    usage: '/rulebook help から見てね'
     default: true

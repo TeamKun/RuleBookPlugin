@@ -17,14 +17,12 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCompleter {
 
-    public boolean setting ;
     public List<ItemStack> Books = new ArrayList<>();
     public ItemStack RuleBook ;
 
@@ -35,7 +33,6 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
             RuleBook = getConfig().getItemStack("JoinBook");
         }
-        setting = getConfig().getBoolean("JoinRead");
         this.getCommand("rulebook").setExecutor(this);
         this.getCommand("rulebook").setTabCompleter(this);
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -43,44 +40,21 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     }
 
     public void setBooks(List<ItemStack> s){
-        if(getConfig().getItemStack("Book1").getType() == Material.WRITTEN_BOOK ) {
-            s.add(getConfig().getItemStack("Book1"));
-        }if(getConfig().getItemStack("Book2").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book2"));
-        }if(getConfig().getItemStack("Book3").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book3"));
-        }if(getConfig().getItemStack("Book4").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book4"));
-        }if(getConfig().getItemStack("Book5").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book5"));
-        }if(getConfig().getItemStack("Book6").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book6"));
-        }if(getConfig().getItemStack("Book7").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book7"));
-        }if(getConfig().getItemStack("Book8").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book8"));
-        }if(getConfig().getItemStack("Book9").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book9"));
-        }if(getConfig().getItemStack("Book10").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book10"));
-        }if(getConfig().getItemStack("Book11").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book11"));
-        }if(getConfig().getItemStack("Book12").getType() == Material.WRITTEN_BOOK) {
-            s.add(getConfig().getItemStack("Book12"));
-        }
-        s.stream().distinct();
-    }
-
-    public boolean checkList(List<ItemStack> s,ItemStack item){
-        boolean check = true;
-        for(int i = 0;i<s.size();i++){
-            BookMeta book1 = (BookMeta)s.get(i).getItemMeta();
-            BookMeta book2 = (BookMeta)item.getItemMeta();
-            if(book1.getTitle().equals(book2.getTitle())){
-                check = false;
+        List<ItemStack> i = (List<ItemStack>)getConfig().get("BookList");
+        if (i==null){
+            s = new ArrayList<>();
+            return;
+        }else {
+            for (int n = 0; n < i.size(); n++) {
+                if (i.get(n).getType() == Material.WRITTEN_BOOK) {
+                    if(!i.contains(i.get(n))) {
+                        s.add(i.get(n));
+                    }
+                }
             }
+            s.stream().distinct();
+            return;
         }
-        return check;
     }
 
     @Override
@@ -93,162 +67,213 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
             } else if (args.length < 1) {
                 sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が少ないよ~！");
             } else {
-                if(args.length==1) {
-                    Player p = (Player) sender;
-                    if (args[0].equals("addlist")) {
+                if (args[0].equals("add")) {
+                    if (args.length != 1) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook add ");
+                    } else {
+                        Player p = (Player) sender;
                         if (p.getItemInHand().getType() == null) {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:記述した本を持ってコマンドを実行してください！");
                         } else if (p.getItemInHand().getType() == Material.WRITTEN_BOOK) {
-                            if (checkList(Books, p.getItemInHand()) == false) {
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに同じ名前の本が存在します。本の名前を変更してください！");
-                            } else if (Books.size() >= 12) {
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストの上限数は12冊です。12冊未満になるように登録された本を削除してください！");
+                            if (Books.contains(p.getItemInHand())) {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに同じ本が存在します!");
                             } else {
-                                    Books.add(p.getItemInHand());
-                                    sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
+                                Books.add(p.getItemInHand());
+                                sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
                             }
                         } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:記述した本を持ってコマンドを実行してください！");
                         }
-                    } else if (args[0].equals("listinfo")) {
+                    }
+                } else if (args[0].equals("list")) {
+                    if (args.length != 1) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook list ");
+                    } else {
                         if (Books.size() == 0) {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに設定されている本はありません");
                         } else {
                             List<String> BookName = new ArrayList<>();
                             for (int i = 0; i < Books.size(); i++) {
-                                BookMeta book = (BookMeta)Books.get(i).getItemMeta();
+                                BookMeta book = (BookMeta) Books.get(i).getItemMeta();
                                 BookName.add(book.getTitle());
                             }
                             sender.sendMessage(ChatColor.GREEN + "==========本の一覧===========");
                             sender.sendMessage(ChatColor.AQUA + String.valueOf(BookName));
                         }
-                    }else if(args[0].equals("newbook")){
+                    }
+                } else if (args[0].equals("new")) {
+                    if (args.length != 1) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook new ");
+                    } else {
+                        Player p = (Player) sender;
                         ItemStack item = new ItemStack(Material.WRITABLE_BOOK);
                         p.getLocation().getWorld().dropItem(p.getLocation(), item);
-                        sender.sendMessage(ChatColor.GREEN +"[RuleBookPlugin]"+ p.getName()+"に未記入の本を与えました！");
-                    }else if(args[0].equals(("deletejoinbook"))){
-                        ItemStack item = new ItemStack(Material.STICK);
-                        RuleBook = item;
-                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
-                    }else if(args[0].equals("joinbookshow")){
-                        p.openBook(RuleBook);
-                    }else if(args[0].equals("reloadconfig")){
-                        Books = new ArrayList<>();
-                        setBooks(Books);
-                        if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
-                            RuleBook = getConfig().getItemStack("JoinBook");
-                        }
-                        setting = getConfig().getBoolean("JoinRead");
-                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configをリロードしました！");
-                    }else if(args[0].equals("saveconfig")){
-                        ConfigSetting();
-                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configに現在の設定を保存しました！");
+                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]" + p.getName() + "に未記入の本を与えました！");
                     }
-                    else{
-                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
-                    }
-                }else if(args.length==2){
-                    if(args[0].equals("deletelist")){
-                        if(args[1].equals("all")){
-                            Books=new ArrayList<>();
-                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストをすべて削除しました！");
-                        }else {
-                            List<String> BookName = new ArrayList<>();
-                            for (int i = 0; i < Books.size(); i++) {
-                                BookMeta book = (BookMeta)Books.get(i).getItemMeta();
-                                BookName.add(book.getTitle());
-                            }
-                                if (BookName.contains(args[1])) {
-                                    int n = BookName.indexOf(args[1]);
-                                    Books.remove(n);
-                                    sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストから" + args[1] + "を削除しました！");
-                                } else {
-                                    sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
-                                }
-
-                        }
-                    }else if(args[0].equals("joinbook")){
+                } else if (args[0].equals("remove")) {
+                    if (args.length != 2) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook remove <本のタイトル> ");
+                    } else {
                         List<String> BookName = new ArrayList<>();
                         for (int i = 0; i < Books.size(); i++) {
-                            BookMeta book = (BookMeta)Books.get(i).getItemMeta();
+                            BookMeta book = (BookMeta) Books.get(i).getItemMeta();
                             BookName.add(book.getTitle());
                         }
-                        if(BookName.contains(args[1])){
+                        if (BookName.contains(args[1])) {
                             int n = BookName.indexOf(args[1]);
-                            RuleBook = Books.get(n);
-                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:RuleBookを設定できました！");
-                        }else{
+                            Books.remove(n);
+                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストから" + args[1] + "を削除しました！");
+                        } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
                         }
-                    }else if(args[0].equals("joinread")) {
-                        if (args[1].equals("on") || args[1].equals("off")) {
-                            if (args[1].equals("on")) {
-                                if (RuleBook == null) {
-                                    sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:RuleBookがセットされていません。記述した本を持って/rulebook joinbooksetコマンドを実行してください！");
-                                } else {
-                                    setting = true;
-                                    sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:ログイン時の本のオープンを" + args[1] + "にしました！");
-                                }
-                            } else {
-                                setting = false;
-                                sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:ログイン時の本のオープンを" + args[1] + "にしました！");
-                            }
-                        }
-                    }else{
-                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
+
                     }
-                }else{
-                    if(args[0].equals("read")){
-                        List<Entity> player = Bukkit.selectEntities(sender,args[2]);
+                } else if (args[0].equals("show")) {
+                    if (args.length != 3) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook show <本のタイトル> <対象プレイヤー> ");
+                    } else {
+                        List<Entity> player = Bukkit.selectEntities(sender, args[2]);
                         List<String> BookName = new ArrayList<>();
                         for (int i = 0; i < Books.size(); i++) {
-                            BookMeta book = (BookMeta)Books.get(i).getItemMeta();
+                            BookMeta book = (BookMeta) Books.get(i).getItemMeta();
                             BookName.add(book.getTitle());
                         }
-                        if(player.size()<=0){
+                        if (player.size() <= 0) {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:対象のプレイヤーは存在しません！");
-                        }else{
-                            if(BookName.contains(args[1])){
+                        } else {
+                            if (BookName.contains(args[1])) {
                                 int n = BookName.indexOf(args[1]);
-                                for(int j=0;j<player.size();j++){
-                                    if(player.get(j) instanceof Player){
+                                for (int j = 0; j < player.size(); j++) {
+                                    if (player.get(j) instanceof Player) {
                                         Player p = (Player) player.get(j);
                                         p.openBook(Books.get(n));
                                     }
                                 }
-                            }else{
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに"+args[1]+"は存在しません！");
+                            } else {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
                             }
                         }
-                    }else if (args[0].equals("givebook")){
-                        List<Entity> player = Bukkit.selectEntities(sender,args[2]);
+                    }
+                } else if (args[0].equals("givebook")) {
+                    if (args.length != 3) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook give <本のタイトル> <対象プレイヤー> ");
+                    } else {
+                        List<Entity> player = Bukkit.selectEntities(sender, args[2]);
                         List<String> BookName = new ArrayList<>();
                         for (int i = 0; i < Books.size(); i++) {
-                            BookMeta book = (BookMeta)Books.get(i).getItemMeta();
+                            BookMeta book = (BookMeta) Books.get(i).getItemMeta();
                             BookName.add(book.getTitle());
                         }
-                        if(player.size()<=0){
+                        if (player.size() <= 0) {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:対象のプレイヤーは存在しません！");
-                        }else{
-                            if(BookName.contains(args[1])){
+                        } else {
+                            if (BookName.contains(args[1])) {
                                 int n = BookName.indexOf(args[1]);
-                                for(int j=0;j<player.size();j++){
-                                    if(player.get(j) instanceof Player){
+                                for (int j = 0; j < player.size(); j++) {
+                                    if (player.get(j) instanceof Player) {
                                         Player p = (Player) player.get(j);
                                         ItemStack item = Books.get(n);
                                         p.getLocation().getWorld().dropItem(p.getLocation(), item);
                                     }
                                 }
-                            }else{
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに"+args[1]+"は存在しません！");
+                            } else {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
                             }
                         }
-                    }else{
-                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が違うよ~！");
                     }
+                }else if(args[0].equals("on-join")){
+                    if(args[1].equals("get")){
+                        if(args.length!=2){
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join get ");
+                        }else {
+                            Player p = (Player) sender;
+                            p.openBook(RuleBook);
+                        }
+                    }else if(args[1].equals(("remove"))){
+                        if(args.length!=2){
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join remove ");
+                        }else {
+                            ItemStack item = new ItemStack(Material.STICK);
+                            RuleBook = item;
+                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
+                        }
+                    }else if(args[1].equals("set")) {
+                        if (args.length != 3) {
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join set ");
+                        } else {
+                            List<String> BookName = new ArrayList<>();
+                            for (int i = 0; i < Books.size(); i++) {
+                                BookMeta book = (BookMeta) Books.get(i).getItemMeta();
+                                BookName.add(book.getTitle());
+                            }
+                            if (BookName.contains(args[2])) {
+                                int n = BookName.indexOf(args[2]);
+                                RuleBook = Books.get(n);
+                                sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:RuleBookを設定できました！");
+                            } else {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[2] + "は存在しません！");
+                            }
+                        }
+                    }
+                }else if(args[0].equals("config")){
+                    if(args[1].equals("reload")){
+                        if(args.length!=2){
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config reload ");
+                        }else {
+                            reloadConfig();
+                            Books = new ArrayList<>();
+                            setBooks(Books);
+                            if (getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK) {
+                                RuleBook = getConfig().getItemStack("JoinBook");
+                            }
+                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configをリロードしました！");
+                        }
+                    }else if(args[1].equals("save")){
+                        if(args.length!=2){
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config save ");
+                        }else{
+                        ConfigSetting();
+                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configに現在の設定を保存しました！");
+                    }
+                }else{
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config reload ");
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config save ");
+                    }
+                }else if(args[0].equals("help")) {
+                    if (args.length != 1) {
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook help");
+                    } else {
+                        sender.sendMessage("------------------コマンド一覧------------------");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook help");
+                        sender.sendMessage("・RuleBookPluginのコマンド一覧の表示");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook add");
+                        sender.sendMessage("・右手に持っている本をリストに登録する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook list");
+                        sender.sendMessage("・リストに登録された本の表示");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook new");
+                        sender.sendMessage("・記入されていない本をコマンド実行者に与える");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook remove <本のタイトル> ");
+                        sender.sendMessage("・指定した本をリストから削除する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook show <本のタイトル> <対象プレイヤー>");
+                        sender.sendMessage("・指定した本を対象プレイヤーに表示する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook give <本のタイトル> <対象プレイヤー>");
+                        sender.sendMessage("・指定した本を対象プレイヤーに与える");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook on-join set <本のタイトル>");
+                        sender.sendMessage("・指定した本をログイン時に表示する本に設定する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook on-join get");
+                        sender.sendMessage("・ログイン時に表示する本をコマンド実行者に表示する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook on-join remove");
+                        sender.sendMessage("・ログイン時に表示する本をを削除する");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook config reload");
+                        sender.sendMessage("・コンフィグをから設定をリロードする");
+                        sender.sendMessage(ChatColor.GOLD + "/rulebook config save");
+                        sender.sendMessage("・コンフィグに現在の設定を保存する");
+                    }
+                }else{
+                    sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が異なります！コマンド一覧の確認:/rulebook help");
                 }
             }
-        }
+            }
         return true;
     }
 
@@ -257,7 +282,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         Player p = event.getPlayer();
         if(RuleBook == null){
         }else {
-            if (setting == true && RuleBook.getType() == Material.WRITTEN_BOOK) {
+            if (RuleBook.getType() == Material.WRITTEN_BOOK) {
                 p.openBook(RuleBook);
             }
         }
@@ -283,28 +308,33 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         if (cmd.getName().equals("rulebook")) {
             if (args.length == 1) {
                 return (sender.hasPermission("rulebook")
-                        ? Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig")
-                        : Stream.of("addlist", "listinfo", "deletelist","deletejoinbook", "joinbook", "joinread", "read", "givebook", "newbook","joinbookshow","reloadconfig","saveconfig"))
+                        ? Stream.of("on-join","config","help","add","list","new","remove","show","give")
+                        : Stream.of("on-join","config","help","add","list","new","remove","show","give"))
                         .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
             } else if (args.length == 2) {
                 switch (args[0]) {
-                    case "deletelist":
-                        BookName.add("all");
-                        return BookName;
-                    case "givebook":
-                    case "read":
-                    case "joinbook":
-                        return BookName;
-                    case "joinread":
+                    case"on-join":
                         return (sender.hasPermission("rulebook")
-                                ? Stream.of("on", "off")
-                                : Stream.of("on", "off"))
+                                ? Stream.of("set","get","remove")
+                                : Stream.of("set","get","remove"))
                                 .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
+                    case"config":
+                        return (sender.hasPermission("rulebook")
+                                ? Stream.of("reload","save")
+                                : Stream.of("reload","save"))
+                                .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
+
+                    case "remove":
+                    case "give":
+                    case "show":
+                        return BookName;
                 }
             } else if (args.length == 3) {
-                if(args[0].equals("givebook")||args[0].equals("read")){
+                if(args[0].equals("give")||args[0].equals("show")){
                         return PlayerName;
-                    }
+                }else if(args[0].equals("on-join")&&args[1].equals("set")){
+                    return BookName;
+                }
                 }
             }
         return null;
@@ -318,195 +348,13 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     public  void  ConfigSetting(){
         reloadConfig();
         FileConfiguration config = getConfig();
-        int n = Books.size();
         ItemStack M = new ItemStack(Material.STICK);
         if(RuleBook != null &&RuleBook.getType() == Material.WRITTEN_BOOK){
             config.set("JoinBook",RuleBook);
         }else{
             config.set("JoinBook",M);
         }
-        config.set("JoinRead",setting);
-        if(n==0){
-            config.set("Book1",M);
-            config.set("Book2",M);
-            config.set("Book3",M);
-            config.set("Book4",M);
-            config.set("Book5",M);
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        } else if(n==1){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",M);
-            config.set("Book3",M);
-            config.set("Book4",M);
-            config.set("Book5",M);
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==2){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",M);
-            config.set("Book4",M);
-            config.set("Book5",M);
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==3){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",M);
-            config.set("Book5",M);
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==4){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",M);
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==5){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",M);
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==6){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",M);
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==7){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",M);
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==8){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",Books.get(7));
-            config.set("Book9",M);
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==9){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",Books.get(7));
-            config.set("Book9",Books.get(8));
-            config.set("Book10",M);
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==10){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",Books.get(7));
-            config.set("Book9",Books.get(8));
-            config.set("Book10",Books.get(9));
-            config.set("Book11",M);
-            config.set("Book12",M);
-        }
-        else if(n==11){
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",Books.get(7));
-            config.set("Book9",Books.get(8));
-            config.set("Book10",Books.get(9));
-            config.set("Book11",Books.get(10));
-            config.set("Book12",M);
-        }
-        else{
-            config.set("Book1",Books.get(0));
-            config.set("Book2",Books.get(1));
-            config.set("Book3",Books.get(2));
-            config.set("Book4",Books.get(3));
-            config.set("Book5",Books.get(4));
-            config.set("Book6",Books.get(5));
-            config.set("Book7",Books.get(6));
-            config.set("Book8",Books.get(7));
-            config.set("Book9",Books.get(8));
-            config.set("Book10",Books.get(9));
-            config.set("Book11",Books.get(10));
-            config.set("Book12",Books.get(11));
-        }
+        config.set("BookList",Books);
         saveConfig();
     }
 }
