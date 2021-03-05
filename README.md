@@ -8,38 +8,35 @@
   
   
 **〇コマンド一覧**  
-*・/rulebook sddlist*    
+*・/rulebook add*    
 リストに本を追加する。右手に記述済みの本を持ちながら実行する。
   
-*・/rulebook listinfo*  
+*・/rulebook list*  
 リストに登録された本のタイトルの一覧を表示する。  
   
-*・/rulebook newbook*  
+*・/rulebook new*  
 未記入の本をコマンド実行者に与える。
   
-*・/rulebook deletelist <all,リスト内の本のタイトル>*  
+*・/rulebook remove <all,リスト内の本のタイトル>*  
 リストからすべて、もしくは対象の本を削除する。  
   
-*・/rulebook joinbook <リスト内の本のタイトル>*   
+*・/rulebook on-join set <リスト内の本のタイトル>*   
 ログイン時に表示する本の設定。  
   
-*・/rulebook joinread on , /rulebook joinread off*  
-joinbookコマンドで設定した本をログイン時に表示するかどうかの設定。  
-  
-*・/rulebook deletejoinbook*  
+*・/rulebook on-join remove*  
 joinbookコマンドで登録された本を削除します。  
   
-*・/rulebook joinbookshow*  
+*・/rulebook on-join get*  
 joinbookコマンドで登録された本を見ることができます。  
   
-*・/rulebook read <リスト内の本のタイトル> <対象のプレイヤー>*  
+*・/rulebook show <リスト内の本のタイトル> <対象のプレイヤー>*  
 指定した本を対象のプレイヤーに読ませる。  
   
-*・/rulebook givebook <リスト内の本のタイトル> <対象のプレイヤー>*  
+*・/rulebook give <リスト内の本のタイトル> <対象のプレイヤー>*  
 指定した本を対象のプレイヤーに与える。  
   
-*・/rulebook reloadconfig*  
+*・/rulebook config reload*  
 コンフィグをリロードします。  
   
-*・/rulebook saveconfig*  
-コンフィグを保存します。
+*・/rulebook config save*  
+コンフィグに現在の設定を保存します。
