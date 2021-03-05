@@ -29,10 +29,12 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        FileConfiguration config = getConfig();
         setBooks(Books);
         if(getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK){
-            RuleBook = getConfig().getItemStack("JoinBook");
+            RuleBook = config.getItemStack("JoinBook");
         }
+        saveConfig();
         this.getCommand("rulebook").setExecutor(this);
         this.getCommand("rulebook").setTabCompleter(this);
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -40,21 +42,21 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     }
 
     public void setBooks(List<ItemStack> s){
-        List<ItemStack> i = (List<ItemStack>)getConfig().get("BookList");
+        FileConfiguration config = getConfig();
+        reloadConfig();
+        saveDefaultConfig();
+        List<ItemStack> i;
+        i = (List<ItemStack>) config.get("BookList");
         if (i==null){
             s = new ArrayList<>();
-            return;
         }else {
             for (int n = 0; n < i.size(); n++) {
                 if (i.get(n).getType() == Material.WRITTEN_BOOK) {
-                    if(!i.contains(i.get(n))) {
                         s.add(i.get(n));
-                    }
                 }
             }
-            s.stream().distinct();
-            return;
         }
+        saveConfig();
     }
 
     @Override
@@ -63,9 +65,9 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
             if (!(sender.isOp())) {
                 sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:このコマンドの実行にはOP権限が必要だよ~！");
             } else if (args.length > 3) {
-                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が多いよ~！");
+                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が多いよ~！コマンド一覧の確認:/rulebook help");
             } else if (args.length < 1) {
-                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が少ないよ~！");
+                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:引数が少ないよ~！コマンド一覧の確認:/rulebook help");
             } else {
                 if (args[0].equals("add")) {
                     if (args.length != 1) {
@@ -154,7 +156,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                             }
                         }
                     }
-                } else if (args[0].equals("givebook")) {
+                } else if (args[0].equals("give")) {
                     if (args.length != 3) {
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook give <本のタイトル> <対象プレイヤー> ");
                     } else {
@@ -182,25 +184,28 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         }
                     }
                 }else if(args[0].equals("on-join")){
+                    if(args.length>=2){
                     if(args[1].equals("get")){
                         if(args.length!=2){
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join get ");
                         }else {
-                            Player p = (Player) sender;
-                            p.openBook(RuleBook);
+                            if(RuleBook==null) {
+                                Player p = (Player) sender;
+                                p.openBook(RuleBook);
+                            }else{
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:本は登録されていません");
+                            }
                         }
                     }else if(args[1].equals(("remove"))){
-                        if(args.length!=2){
-                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join remove ");
-                        }else {
+                        if(args.length==2){
                             ItemStack item = new ItemStack(Material.STICK);
                             RuleBook = item;
                             sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]JoinBookに設定された本を削除しました！");
+                        }else {
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join remove ");
                         }
                     }else if(args[1].equals("set")) {
-                        if (args.length != 3) {
-                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join set ");
-                        } else {
+                        if (args.length == 3) {
                             List<String> BookName = new ArrayList<>();
                             for (int i = 0; i < Books.size(); i++) {
                                 BookMeta book = (BookMeta) Books.get(i).getItemMeta();
@@ -213,27 +218,37 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                             } else {
                                 sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[2] + "は存在しません！");
                             }
+                        } else {
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join set ");
                         }
                     }
+                    }else{
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join get ");
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join remove ");
+                        sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join set ");
+                    }
                 }else if(args[0].equals("config")){
+                    if(args.length>=2){
                     if(args[1].equals("reload")){
-                        if(args.length!=2){
-                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config reload ");
-                        }else {
+                        if(args.length==2){
                             reloadConfig();
+                            saveDefaultConfig();
                             Books = new ArrayList<>();
                             setBooks(Books);
                             if (getConfig().getItemStack("JoinBook").getType() == Material.WRITTEN_BOOK) {
                                 RuleBook = getConfig().getItemStack("JoinBook");
                             }
                             sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configをリロードしました！");
+                        }else {
+                            sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config reload ");
                         }
-                    }else if(args[1].equals("save")){
-                        if(args.length!=2){
+                    }else if(args[1].equals("save")) {
+                        if (args.length == 2) {
+                            ConfigSetting();
+                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configに現在の設定を保存しました！");
+                        } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config save ");
-                        }else{
-                        ConfigSetting();
-                        sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]Configに現在の設定を保存しました！");
+                        }
                     }
                 }else{
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook config reload ");
@@ -346,7 +361,6 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
     }
 
     public  void  ConfigSetting(){
-        reloadConfig();
         FileConfiguration config = getConfig();
         ItemStack M = new ItemStack(Material.STICK);
         if(RuleBook != null &&RuleBook.getType() == Material.WRITTEN_BOOK){
