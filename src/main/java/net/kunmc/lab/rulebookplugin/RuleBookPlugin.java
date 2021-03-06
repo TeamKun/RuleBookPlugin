@@ -189,11 +189,11 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         if(args.length!=2){
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook on-join get ");
                         }else {
-                            if(RuleBook==null) {
+                            if(RuleBook==null||RuleBook.getType()!=Material.WRITTEN_BOOK) {
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:本は登録されていません");
+                            }else{
                                 Player p = (Player) sender;
                                 p.openBook(RuleBook);
-                            }else{
-                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:本は登録されていません");
                             }
                         }
                     }else if(args[1].equals(("remove"))){
@@ -305,21 +305,6 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String Label, String[] args){
-        List<String> BookName = new ArrayList<>();
-        for (ItemStack itemStack : Books) {
-            BookMeta book = (BookMeta) itemStack.getItemMeta();
-            BookName.add(book.getTitle());
-        }
-        ArrayList<String> PlayerName = new ArrayList<String>();
-        getServer().getOnlinePlayers().forEach(player ->{
-            PlayerName.add(player.getName());
-        });
-        PlayerName.add("@a");
-        PlayerName.add("@p");
-        PlayerName.add("@r");
-        PlayerName.add("@s");
-        PlayerName.add("@e");
-
         if (cmd.getName().equals("rulebook")) {
             if(args.length==1){
                 return Stream.of("on-join","config","help","add","list","new","remove","show","give").filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
@@ -328,10 +313,29 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
             }if(args.length==2&&args[0].equals("config")){
                 return Stream.of("reload","save").filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
             }if(args.length==2&&(args[0].equals("remove")||args[0].equals("give")||args[0].equals("show"))){
+                List<String> BookName = new ArrayList<>();
+                for (ItemStack itemStack : Books) {
+                    BookMeta book = (BookMeta) itemStack.getItemMeta();
+                    BookName.add(book.getTitle());
+                }
                 return BookName;
             }if(args.length==3&&(args[0].equals("give")||args[0].equals("show"))){
+                List<String> PlayerName = new ArrayList<>();
+                getServer().getOnlinePlayers().forEach(player ->{
+                    PlayerName.add(player.getName());
+                });
+                PlayerName.add("@a");
+                PlayerName.add("@p");
+                PlayerName.add("@r");
+                PlayerName.add("@s");
+                PlayerName.add("@e");
                 return PlayerName;
             }if(args.length==3&&args[0].equals("on-join")&&args[1].equals("set")){
+                List<String> BookName = new ArrayList<>();
+                for (ItemStack itemStack : Books) {
+                    BookMeta book = (BookMeta) itemStack.getItemMeta();
+                    BookName.add(book.getTitle());
+                }
                 return BookName;
             }
         }
