@@ -321,37 +321,20 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         PlayerName.add("@e");
 
         if (cmd.getName().equals("rulebook")) {
-            if (args.length == 1) {
-                return (sender.hasPermission("rulebook")
-                        ? Stream.of("on-join","config","help","add","list","new","remove","show","give")
-                        : Stream.of("on-join","config","help","add","list","new","remove","show","give"))
-                        .filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
-            } else if (args.length == 2) {
-                switch (args[0]) {
-                    case"on-join":
-                        return (sender.hasPermission("rulebook")
-                                ? Stream.of("set","get","remove")
-                                : Stream.of("set","get","remove"))
-                                .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
-                    case"config":
-                        return (sender.hasPermission("rulebook")
-                                ? Stream.of("reload","save")
-                                : Stream.of("reload","save"))
-                                .filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
-
-                    case "remove":
-                    case "give":
-                    case "show":
-                        return BookName;
-                }
-            } else if (args.length == 3) {
-                if(args[0].equals("give")||args[0].equals("show")){
-                        return PlayerName;
-                }else if(args[0].equals("on-join")&&args[1].equals("set")){
-                    return BookName;
-                }
-                }
+            if(args.length==1){
+                return Stream.of("on-join","config","help","add","list","new","remove","show","give").filter(e -> e.startsWith(args[0])).collect(Collectors.toList());
+            }if(args.length==2&&args[0].equals("on-join")){
+                return Stream.of("set","get","remove").filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
+            }if(args.length==2&&args[0].equals("config")){
+                return Stream.of("reload","save").filter(e -> e.startsWith(args[1])).collect(Collectors.toList());
+            }if(args.length==2&&(args[0].equals("remove")||args[0].equals("give")||args[0].equals("show"))){
+                return BookName;
+            }if(args.length==3&&(args[0].equals("give")||args[0].equals("show"))){
+                return PlayerName;
+            }if(args.length==3&&args[0].equals("on-join")&&args[1].equals("set")){
+                return BookName;
             }
+        }
         return null;
     }
 
