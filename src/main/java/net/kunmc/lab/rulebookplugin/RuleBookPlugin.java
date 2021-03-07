@@ -82,6 +82,7 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                             } else {
                                 Books.add(p.getItemInHand());
                                 sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
+                                ConfigSetting();
                             }
                         } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:記述した本を持ってコマンドを実行してください！");
@@ -122,9 +123,14 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                             BookName.add(book.getTitle());
                         }
                         if (BookName.contains(args[1])) {
-                            int n = BookName.indexOf(args[1]);
-                            Books.remove(n);
-                            sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストから" + args[1] + "を削除しました！");
+                            for(int n =0;n<BookName.size();n++){
+                                if(BookName.get(n)==args[1]){
+                                    Books.remove(n);
+                                    sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストから" + args[1] + "を削除しました！");
+                                    ConfigSetting();
+                                    n=BookName.size();
+                                }
+                            }
                         } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに" + args[1] + "は存在しません！");
                         }
@@ -175,6 +181,9 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                                     if (player.get(j) instanceof Player) {
                                         Player p = (Player) player.get(j);
                                         ItemStack item = Books.get(n);
+                                        BookMeta bookmeta = (BookMeta) item.getItemMeta();
+                                        bookmeta.setGeneration(BookMeta.Generation.COPY_OF_COPY);
+                                        item.setItemMeta(bookmeta);
                                         p.getLocation().getWorld().dropItem(p.getLocation(), item);
                                     }
                                 }
