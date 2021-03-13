@@ -2,5 +2,7 @@ JoinBook:
   ==: org.bukkit.inventory.ItemStack
   type: STICK
 
+caution: '以下のリストの本のタイトルはかぶらないようにしてください。同じタイトルの本があるときに呼び出すと、より古いものが呼び出されます。'
+
 BookList:
 

@@ -59,6 +59,24 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
         saveConfig();
     }
 
+    public boolean onBookCheck(ItemStack i){
+        List<String> BookName = new ArrayList<>();
+        for (int n = 0; n < Books.size(); n++) {
+            BookMeta book = (BookMeta) Books.get(n).getItemMeta();
+            BookName.add(book.getTitle());
+        }
+        if(BookName.size()==0) {
+            return false;
+        }else{
+            BookMeta meta = (BookMeta) i.getItemMeta();
+            if(BookName.contains(meta.getTitle())){
+                return true;
+            }else {
+                return false;
+            }
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String Label, String[] args) {
         if (cmd.getName().equals("rulebook")) {
@@ -74,15 +92,17 @@ public final class RuleBookPlugin extends JavaPlugin implements Listener , TabCo
                         sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:コマンドの形式:/rulebook add ");
                     } else {
                         Player p = (Player) sender;
-                        if (p.getItemInHand().getType() == null) {
+                        if (p.getItemInHand().getType() == null||p.getItemInHand().getType() != Material.WRITTEN_BOOK) {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:記述した本を持ってコマンドを実行してください！");
                         } else if (p.getItemInHand().getType() == Material.WRITTEN_BOOK) {
                             if (Books.contains(p.getItemInHand())) {
                                 sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:リストに同じ本が存在します!");
+                            }else if(onBookCheck(p.getItemInHand())){
+                                sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:同じ名前の本が存在します。別の名前に変更するか、同名の本を削除してください!");
                             } else {
-                                Books.add(p.getItemInHand());
-                                sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
-                                ConfigSetting();
+                                    Books.add(p.getItemInHand());
+                                    sender.sendMessage(ChatColor.GREEN + "[RuleBookPlugin]:リストに本を追加しました！");
+                                    ConfigSetting();
                             }
                         } else {
                             sender.sendMessage(ChatColor.YELLOW + "[RuleBookPlugin]:記述した本を持ってコマンドを実行してください！");
